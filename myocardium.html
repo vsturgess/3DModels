@@ -4,8 +4,6 @@
     <title>Getting Started with Three.js</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-</head>
-<body>
     <script type="importmap">
         {
             "imports": {
@@ -13,12 +11,16 @@
                 "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/",
                 "GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js",
                 "three/addons/": "https://unpkg.com/three@0.147/examples/jsm/"
-
             }
         }
     </script>
-  </head>
-  <body>
+</head>
+<body>
+    <script>
+        if (!window.WebGLRenderingContext) {
+            document.body.innerHTML = '<h1>Your browser does not support WebGL. Please use a different browser.</h1>';
+        }
+    </script>
     <script type="module" src="myocardium.js"></script>
-  </body>
+</body>
 </html>
