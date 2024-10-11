@@ -93,7 +93,7 @@ loadModel('https://vsturgess.github.io/3DModels/myocytes_only.glb', (gltf) => {
 });
 
 // Load Vessels GLB model
-loadModel('https://vsturgess.github.io/3DModels/segments_mult_material.glb', (gltf) => {
+loadModel('https://vsturgess.github.io/3DModels/segments_mult_materials.glb', (gltf) => {
     vesselsGLB = gltf; // Store the vessels model globally
     vesselsGLB.scene.visible = true;
 
