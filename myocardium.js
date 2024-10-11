@@ -87,13 +87,13 @@ function loadModel(filePath, onLoadCallback) {
 }
 
 // Load Myocytes GLB model
-loadModel('assets/myocytes_only.glb', (gltf) => {
+loadModel('https://vsturgess.github.io/3DModels/myocytes_only.glb', (gltf) => {
     myocytesGLB = gltf; // Store the myocytes model globally
     myocytesGLB.scene.visible = false;
 });
 
 // Load Vessels GLB model
-loadModel('assets/segments_mult_materials.glb', (gltf) => {
+loadModel('https://vsturgess.github.io/3DModels/segments_mult_material.glb', (gltf) => {
     vesselsGLB = gltf; // Store the vessels model globally
     vesselsGLB.scene.visible = true;
 
@@ -103,7 +103,7 @@ loadModel('assets/segments_mult_materials.glb', (gltf) => {
 
 let factors = [];
 // Load factors from CSV
-loadFactors('HbSat_ENDO_sept22.csv').then(loadedFactors => {
+loadFactors('https://vsturgess.github.io/3DModels/HbSat_ENDO_sept22.csv').then(loadedFactors => {
     factors = loadedFactors;
     console.log('Loaded factors:', factors);
 });
