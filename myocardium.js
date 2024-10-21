@@ -155,8 +155,8 @@ function startColorChanging() {
          materials.forEach((material, index) => {
             if (material && material.isMeshStandardMaterial && factors[index]) {
                 const factor = factors[index][step]; // Get the factor for this material
-                const startColor = new THREE.Color(1, 0, 0); // Red
-                const endColor = new THREE.Color(0, 0, 1); // Blue
+                const startColor = new THREE.Color(0, 0, 1); // Red
+                const endColor = new THREE.Color(1, 0, 0); // Blue
 
                 // Interpolate between red and blue based on the factor value
                 const newColor = interpolateColor(startColor, endColor, factor);
