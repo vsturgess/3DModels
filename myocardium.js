@@ -127,7 +127,7 @@ loadModel('https://vsturgess.github.io/3DModels/segments.glb', (gltf) => {
 
 let factors = [];
 // Load factors from CSV
-loadFactors('https://vsturgess.github.io/3DModels/HbSat_ENDO_sept22.csv').then(loadedFactors => {
+loadFactors('https://vsturgess.github.io/3DModels/OSS1147_HBO2_SAT_ENDO_UNEVEN.csv').then(loadedFactors => {
     factors = loadedFactors;
     console.log('Loaded factors:', factors);
 });
