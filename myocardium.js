@@ -310,6 +310,9 @@ gui.domElement.style.top = `${navHeight}px`; // Move GUI down by navHeight
 gui.domElement.style.right = '0px'; // Optional: adjust position
 document.body.appendChild(gui.domElement); // Append GUI to the body
 
+// Set initial state to collapsed
+gui.close(); // This will start the GUI collapsed
+
 
 const modelVisibility = {
     showMyocytes: false, // Initially visible
