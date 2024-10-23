@@ -332,7 +332,7 @@ const ColorChange = {
 };
 const props = {
     localClippingEnabled: true,
-    plane: localPlaneZ.constant,
+    z_plane: localPlaneZ.constant,
 };
 
 // GUI control to show/hide myocytes
@@ -349,20 +349,9 @@ gui.add(modelVisibility, 'showVessels').name('Show Vessels').onChange((value) =>
     }
 });
 
-// GUI control to enable/disable local clipping
-gui.add(props, 'localClippingEnabled').onChange((value) => {
-    if (loadedGLB) {
-        loadedGLB.scene.traverse((child) => {
-            if (child.isMesh && child.material.isMeshStandardMaterial) {
-                child.material.clippingPlanes = value ? [localPlaneZ] : [];
-                child.material.needsUpdate = true;
-            }
-        });
-    }
-});
 
 // GUI control to adjust the clipping plane position
-gui.add(props, 'plane', -5, 5).onChange((value) => {
+gui.add(props, 'z_plane', -5, 5).onChange((value) => {
     localPlaneZ.constant = value; // Update the clipping plane position
     if (loadedGLB) {
         loadedGLB.scene.traverse((child) => {
