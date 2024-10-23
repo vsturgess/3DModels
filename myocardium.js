@@ -34,7 +34,7 @@ glbScene.background = new THREE.Color(0xe5e7e9);
 // Create a local clipping plane
 const localPlaneX = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
 const localPlaneY = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
-const localPlaneZ = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
+const localPlaneZ = new THREE.Plane(new THREE.Vector3(0, 0, -1), 5);
 
 
 // Create GLTFLoader instance
@@ -107,6 +107,8 @@ function loadModel(filePath, onLoadCallback) {
     );
 }
 
+
+
 // Load Myocytes GLB model
 loadModel('https://vsturgess.github.io/3DModels/myocytes_only.glb', (gltf) => {
     myocytesGLB = gltf; // Store the myocytes model globally
@@ -114,22 +116,45 @@ loadModel('https://vsturgess.github.io/3DModels/myocytes_only.glb', (gltf) => {
     console.log('Myocytes model loaded and stored globally.');
 });
 
+
+let sortedMaterials = []; // Declare a global variable for sorted materials
+
 // Load Vessels GLB model
-loadModel('https://vsturgess.github.io/3DModels/segments.glb', (gltf) => {
+loadModel('https://vsturgess.github.io/3DModels/segments2.glb', (gltf) => {
     vesselsGLB = gltf; // Store the vessels model globally
     vesselsGLB.scene.visible = true;
-    console.log('Vessels model loaded and stored globally.');
 
-    // Extract materials after loading
-    extractMaterials(gltf);
+    // Extract materials
+    extractMaterials(vesselsGLB);
+
+    // Log material details for vessels
+    //vesselsGLB.scene.traverse((child) => {
+    //    if (child.isMesh && child.material.isMeshStandardMaterial) {
+    //        console.log(child.material.name, materials.indexOf(child.material));
+    //    }
+    //});
+
+    // Sort the materials after extraction
+    const sortedNames = customSort(materials.map(m => m.name));
+    //console.log('Sorted Material Names:', sortedNames);
+
+    // Create the sorted materials array
+    sortedMaterials = sortedNames.map(name => materials.find(m => m.name === name));
+    //console.log('Sorted Materials:', sortedMaterials);
 });
-
 
 let factors = [];
 // Load factors from CSV
 loadFactors('https://vsturgess.github.io/3DModels/OSS1147_HBO2_SAT_ENDO_UNEVEN.csv').then(loadedFactors => {
     factors = loadedFactors;
     console.log('Loaded factors:', factors);
+});
+
+let ID_factors = [];
+// Load factors from CSV
+loadFactors('https://vsturgess.github.io/3DModels/IdentifyInOut_Vessels.csv').then(loadedFactors => {
+    ID_factors = loadedFactors;
+    console.log('Loaded factors:', ID_factors);
 });
 
 // Function to extract materials
@@ -141,9 +166,63 @@ function extractMaterials(gltf) {
     });
 }
 
-// Function to start color changing
+// Function to sort material names numerically based on the part after the underscore
+function customSort(materialNames) {
+    return materialNames.sort((a, b) => {
+        const aParts = a.split('_');
+        const bParts = b.split('_');
+
+        // Compare the part before the underscore (as strings)
+        const nameComparison = aParts[0].localeCompare(bParts[0]);
+
+        if (nameComparison !== 0) {
+            return nameComparison; // Sort by name part first
+        }
+
+        // Parse the numerical part after the underscore (if it exists)
+        const aNum = aParts[1] ? parseInt(aParts[1], 10) : 0;
+        const bNum = bParts[1] ? parseInt(bParts[1], 10) : 0;
+
+        return aNum - bNum; // Sort numerically by the number
+    });
+}
+
+// Function to start ID color assignment
+function IDColor() {
+    if (ID_factors.length === 0 || sortedMaterials.length === 0) return; // Ensure factors and sorted materials are loaded
+
+    // Loop through the sorted materials and apply color based on factors
+    sortedMaterials.forEach((material, index) => {
+        if (material && material.isMeshStandardMaterial && ID_factors[index] !== undefined) {
+            const ID_factor = ID_factors[index]; // Get the factor for this material
+
+
+            if (ID_factor == 1) {
+                material.color.set(0xff0000); // Set color to red
+            } else if (ID_factor == 0.5) {
+                material.color.set(0x000000); // Set color to black
+            } else if (ID_factor == 0) {
+                material.color.set(0x0000ff); // Set color to blue
+            }
+        } else {
+            console.warn(`Material or factor missing for index: ${index}`);
+        }
+    });
+}
+
+
+
+
+// Show or hide the scale bar when color-changing is activated
+function toggleScaleBar(show) {
+  const scaleBar = document.querySelector('.scale-bar-container');
+  scaleBar.style.display = show ? 'block' : 'none';
+}
+
+// Modify the startColorChanging function if necessary
 function startColorChanging() {
-    if (factors.length === 0 || materials.length === 0) return; // Ensure factors and materials are loaded
+    if (factors.length === 0 || sortedMaterials.length === 0) return; // Ensure factors and sorted materials are loaded
+    toggleScaleBar(true);
 
     let step = 0; // Step counter
     const totalTimeSteps = factors[0].length; // Number of time steps
@@ -151,8 +230,8 @@ function startColorChanging() {
     colorChangeInterval = setInterval(() => {
         step = step % totalTimeSteps; // Loop through time steps
 
-         // Loop through the materials and apply color based on factors
-         materials.forEach((material, index) => {
+        // Loop through the sorted materials and apply color based on factors
+        sortedMaterials.forEach((material, index) => {
             if (material && material.isMeshStandardMaterial && factors[index]) {
                 const factor = factors[index][step]; // Get the factor for this material
                 const startColor = new THREE.Color(0, 0, 1); // Red
@@ -167,11 +246,12 @@ function startColorChanging() {
         });
 
         step++;
-    }, 100); // Change color every 100ms
+    }, 40); // Change color every 40ms
 }
 
 // Function to stop color changing and set materials to black
 function stopColorChanging() {
+    toggleScaleBar(false);
     clearInterval(colorChangeInterval); // Clear the interval
     materials.forEach(material => {
         if (material && material.isMeshStandardMaterial) {
@@ -290,8 +370,50 @@ gui.add(props, 'plane', -5, 5).onChange((value) => {
     }
 });
 
+
+
+const ArterialInlet = {
+    startChange: () => {
+        camera.position.set(-1, 0.2, 0);
+    }
+};
+
+const VenousOutlet1 = {
+    startChange: () => {
+        camera.position.set(0.7, 1.2, -4);
+    }
+};
+
+const VenousOutlet2 = {
+    startChange: () => {
+        camera.position.set(1.5, 0.5, 4);
+    }
+};
+
+const ColorInletOutlets = {
+    startColorChange: () => {
+        if (colorChanging) {
+            colorChanging = false;
+            stopColorChanging(); // Stop the dynamic color change
+        }
+        IDColor(); // Apply the ID color (constant color for arterial inlet)
+    }
+};
+
 // GUI control to start/stop color changing
-gui.add(ColorChange, 'startColorChange').name('Toggle Color Change');
+gui.add(ColorChange, 'startColorChange').name('Show O2-Hemoglobin Saturation');
+
+// GUI control to start/stop color changing
+gui.add(ColorInletOutlets, 'startColorChange').name('Color Inlets and Outlets');
+
+// GUI control to start/stop color changing
+gui.add(ArterialInlet, 'startChange').name('Find Arterial Inlet');
+
+// GUI control to start/stop color changing
+gui.add(VenousOutlet1, 'startChange').name('Find Venous Outlet 1');
+
+// GUI control to start/stop color changing
+gui.add(VenousOutlet2, 'startChange').name('Find Venous Outlet 2');
 
 // Try help section
 const infoIcon = document.getElementById('info-icon');
