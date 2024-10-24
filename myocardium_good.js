@@ -224,7 +224,6 @@ function IDColor() {
 }
 
 
-
 // Show or hide the scale bar when color-changing is activated
 function toggleScaleBar_Hb(show) {
     const scaleBar = document.querySelector('.scale-bar-container');
@@ -524,7 +523,7 @@ const colorChangeControls = {
 
 
 // GUI control for flows
-gui.add(colorChangeControls, 'startChange_flow').name('Show Flows');
+gui.add(colorChangeControls, 'startChange_flow').name('Show Flows in nL/s (log scale)');
 
 // GUI control for Hb
 gui.add(colorChangeControls, 'startChange_Hb').name('Show O2-Hemoglobin Saturation');
