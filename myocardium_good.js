@@ -243,7 +243,7 @@ function toggleScaleBar_Hb(show) {
     }
   }
 
-  function updateScaleBarLabels(type) {
+function updateScaleBarLabels(type) {
     const topLabel = document.getElementById('topLabel');
     const bottomLabel = document.getElementById('bottomLabel');
 
@@ -251,8 +251,8 @@ function toggleScaleBar_Hb(show) {
         topLabel.textContent = '100%'; // Change as needed
         bottomLabel.textContent = '0%'; // Change as needed
     } else if (type === 'flow') {
-        topLabel.textContent = '1e5'; // Change as needed
-        bottomLabel.textContent = '0'; // Change as needed
+        topLabel.textContent = '1e-1 nL/s'; // Change as needed
+        bottomLabel.textContent = '1e-5 nL/s'; // Change as needed
     }
 }
 
