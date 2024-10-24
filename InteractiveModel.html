@@ -185,6 +185,17 @@
         width: 100%;
     }
 
+    .nav-title {
+      background-color: #333; /* Background color for contrast */
+      border: 2px solid black; /* Black border */
+      color: white;
+      text-align: left; /* Center text */
+      padding: 5px; /* Padding for some space */
+      font-size: 24px; /* Font size */
+      font-weight: bold; /* Bold text */
+      margin-bottom: 0; /* Remove bottom margin to connect with the nav */
+  }
+
     /* Responsive columns */
     @media screen and (max-width: 600px) {
         .column {
@@ -222,9 +233,13 @@
 </head>
 <body>
 
+  <div class="nav-title">
+    Modeling Myocardial Perfusion 
+</div>
+
 <div class="topnav" id="myTopnav">
-  <a class="active" href="https://vsturgess.github.io/3DModels/InteractiveModel.html">Interactive Model</a>
   <a href="https://vsturgess.github.io/3DModels/AboutPerfusion.html">Learn More</a>
+  <a class="active" href="https://vsturgess.github.io/3DModels/InteractiveModel.html">Interactive Model</a>
   <a>Our Group</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
@@ -236,7 +251,7 @@
       document.body.innerHTML = '<h1>Your browser does not support WebGL. Please use a different browser.</h1>';
   }
 </script>
-<script type="module" src="myocardium.js"></script>
+<script type="module" src="myocardium_good.js"></script>
 
 <div id="info-icon" class="info-icon" title="Information">
   <i class="fa fa-info-circle" style="font-size: 24px;"></i>
@@ -258,10 +273,11 @@
 <!-- Scale Bar -->
 <div class="scale-bar-container">
   <div class="scale-bar-labels">
-    <div class="top-label">100%</div>
-    <div class="bottom-label">0%</div>
+    <div id="topLabel" class="top-label">100%</div>
+    <div id="bottomLabel" class="bottom-label">0%</div>
   </div>
 </div>
+
 
 <script>
   // Close button event handler
@@ -272,6 +288,30 @@
       const popup = document.getElementById('popup');
       popup.style.display = 'none'; // Hide popup
   });
+
+  // Toggle functionality
+  document.getElementById('toggleHb').addEventListener('click', function() {
+      updateScaleBarLabels('Hb');
+      // Additional code to change the color for Hb
+  });
+
+  document.getElementById('toggleFlow').addEventListener('click', function() {
+      updateScaleBarLabels('flow');
+      // Additional code to change the color for flow
+  });
+
+  function updateScaleBarLabels(type) {
+      const topLabel = document.getElementById('topLabel');
+      const bottomLabel = document.getElementById('bottomLabel');
+
+      if (type === 'Hb') {
+          topLabel.textContent = '100%';
+          bottomLabel.textContent = '0%';
+      } else if (type === 'flow') {
+          topLabel.textContent = '1e5';
+          bottomLabel.textContent = '0';
+      }
+  }
 
   function myFunction() {
       var x = document.getElementById("myTopnav");

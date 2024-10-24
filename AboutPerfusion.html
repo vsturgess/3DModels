@@ -75,9 +75,19 @@
             align-items: center; /* Center items horizontally */
             min-height: 300px; /* Adjust this value as needed */
         }
+        .nav-title {
+            background-color: #333; /* Background color for contrast */
+            border: 2px solid black; /* Black border */
+            color: white;
+            text-align: left; /* Center text */
+            padding: 5px; /* Padding for some space */
+            font-size: 24px; /* Font size */
+            font-weight: bold; /* Bold text */
+            margin-bottom: 0; /* Remove bottom margin to connect with the nav */
+        }
 
-/* Responsive columns */
-  @media screen and (max-width: 600px) {
+        /* Responsive columns */
+        @media screen and (max-width: 600px) {
             .column {
                 width: 100%; /* Make columns full width on small screens */
                 margin-bottom: 20px;
@@ -111,10 +121,13 @@
     </style>
 </head>
 <body>
+    <div class="nav-title">
+        Modeling Myocardial Perfusion
+    </div>
 
     <div class="topnav" id="myTopnav">
-        <a href="https://vsturgess.github.io/3DModels/InteractiveModel.html">Interactive Model</a>
         <a class="active" href="https://vsturgess.github.io/3DModels/AboutPerfusion.html">Learn More</a>
+        <a href="https://vsturgess.github.io/3DModels/InteractiveModel.html">Interactive Model</a>
         <a>Our Group</a>
         <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>
